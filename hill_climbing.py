@@ -57,10 +57,6 @@ def hill_climbing(
     sigma = sigma_fraction * (upper_bound - lower_bound)
     restart_budget = max(1, max_evaluations // n_restarts)
 
-    # Keep restarting until the evaluation budget is exhausted. The final
-    # restart may get fewer evaluations than `restart_budget` (whatever is
-    # left), which guarantees we use *exactly* max_evaluations calls total,
-    # regardless of whether max_evaluations divides evenly by n_restarts.
     while objective.remaining > 0:
         budget_this_restart = min(restart_budget, objective.remaining)
         _single_climb(
