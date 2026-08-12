@@ -32,16 +32,16 @@ def _calibrate_temperature(
     n_calibration = min(n_calibration, max(objective.remaining - 1, 0))
 
     deltas = []
-    x = rng.uniform(lower_bound, upper_bound, size=dimension)
-    x_value = objective(x)
+    parent = rng.uniform(lower_bound, upper_bound, size=dimension)
+    parent_value = objective(parent)
 
     for _ in range(n_calibration):
         noise = rng.normal(loc=0.0, scale=sigma, size=dimension)
-        candidate = np.clip(x + noise, lower_bound, upper_bound)
+        candidate = np.clip(parent + noise, lower_bound, upper_bound)
         candidate_value = objective(candidate)
-        deltas.append(abs(candidate_value - x_value))
+        deltas.append(abs(candidate_value - parent_value))
 
-        x, x_value = candidate, candidate_value
+        parent, parent_value = candidate, candidate_value
 
     if deltas:
         mean_delta = max(np.mean(deltas), 1e-12) 
@@ -51,7 +51,7 @@ def _calibrate_temperature(
         # positive temperature 
         t0 = 1e-6
 
-    return t0, x, x_value
+    return t0, parent, parent_value
 
 
 def simulated_annealing(
